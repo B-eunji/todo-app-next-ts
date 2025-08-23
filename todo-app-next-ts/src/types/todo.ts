@@ -1,4 +1,4 @@
-// 할 일 (To do) 데이터 타입 정의
+// 프론트 공용 타입 정의 - Todo 데이터 
 export type Todo = {
     id: string; //고유 ID
     name: string; //할 일 제목/내용

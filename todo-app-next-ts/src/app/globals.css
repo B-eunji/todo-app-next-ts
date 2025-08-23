@@ -1,42 +1,15 @@
+/* 공용 컬러 시스템 */
+/* 임시 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff; /* 배경 */
+  --panel: #111827;      /* 카드/패널 */
+  --text: #e5e7eb;       /* 본문 글자 */
+  --muted: #9ca3af;      /* 부가 텍스트 */
+  --primary: #22c55e;    /* 포인트(버튼, 체크 색) */
+  --border: #1f2937;     /* 테두리 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+html, body { height: 100%; background: var(--bg); color: var(--text); }
+* { box-sizing: border-box; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; }

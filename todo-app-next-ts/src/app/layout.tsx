@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+/**
+ * 앱 공통 레이아웃
+ * - 상단 헤더에 '로고' 역할 버튼을 배치 (누르면 항상 '/'로 이동)
+ * - 중앙 컨테이너로 페이지 콘텐츠를 감싼다
+ */
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
