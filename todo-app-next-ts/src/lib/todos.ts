@@ -34,7 +34,7 @@ export const fromServer = (s: ServerTodo): Todo => {
 // 프론트 응답을 서버에서 쓰는 Todo 타입으로 변경
 export const toServerUpdate = (patch: Partial<Todo>) => {
     const p: Record<string, unknown> = {};
-    if (typeof patch.name === "string") p.name = patch.done;
+    if (typeof patch.name === "string") p.name = patch.name;
     if (typeof patch.done === "boolean") p.isCompleted = patch.done;
     if (typeof patch.memo === "string") p.memo = patch.memo;
     if (typeof patch.imageUrl === "string") p.imageUrl = patch.imageUrl;
@@ -55,6 +55,12 @@ export async function getTodos(){
     const list = await api<ServerTodo[]>("/items", { method: "GET" });
     return list.map(fromServer); 
 } 
+
+// 2) 단건 목록 가져오기
+export async function getTodo(id: string): Promise<Todo> {
+  const s = await api<ServerTodo>(`/items/${id}`, { method: "GET" });
+  return fromServer(s);
+}
 
 // 2) 새로운 할 일 추가
 export async function createTodo(name: string){

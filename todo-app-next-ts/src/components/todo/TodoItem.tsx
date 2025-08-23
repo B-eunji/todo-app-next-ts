@@ -53,7 +53,7 @@ export default function TodoItem({
             </label>
 
             {/* 상세 페이지로 이동 */}
-            <Link href={`/items/${todo.id}` } style={{marginLeft: 'auto'}}>
+            <Link href={`/items/${todo.id}`} style={{marginLeft: 'auto'}}>
                 상세
             </Link>
         </li>

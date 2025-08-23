@@ -1,8 +1,10 @@
 'use client';
-import NameField from './fields/Namefield';
+import NameField from './fields/NameField';
 import StatusField from './fields/StatusField';
 import MemoField from './fields/MemoField';
 import ImageField from './fields/ImageField';
+
+console.log('MemoField import =>', MemoField, typeof MemoField);
 
 export default function DetailForm(props: {
   name: string; setName: (v:string)=>void;
