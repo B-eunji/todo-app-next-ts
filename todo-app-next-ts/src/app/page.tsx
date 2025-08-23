@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import type { Todo } from '@/types/todo';
 import { getTodos, createTodo, toggleTodo } from '@/lib/todos';
-import TodoForm from '@/components/TodoForm';
-import TodoList from '@/components/TodoList';
+import TodoForm from '@/components/todo/TodoForm';
+import TodoList from '@/components/todo/TodoList';
 
 /**
  * Page (할 일 목록 페이지)
