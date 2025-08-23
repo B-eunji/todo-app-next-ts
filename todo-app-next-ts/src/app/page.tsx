@@ -1,121 +1,100 @@
-// src/app/page.tsx
 'use client';
 
-// 임시 테스트 페이지
-// - 페이지 진입 시 목록을 콘솔에 출력
-// - 버튼으로 create/toggle/delete 를 바로 호출해 동작 검증
-// - 실제 과제 UI 만들기 전에 "백엔드 연결이 정상인지"를 확실히 확인하는 단계
+import { useEffect, useState } from 'react';
+import type { Todo } from '@/types/todo';
+import { getTodos, createTodo, toggleTodo } from '@/lib/todos';
+import TodoForm from '@/components/TodoForm';
+import TodoList from '@/components/TodoList';
 
-import { useEffect, useState } from "react";
-import type { Todo } from "@/types/todo";
-import { getTodos, createTodo, toggleTodo, deleteTodo } from "@/lib/todos";
-
+/**
+ * Page (할 일 목록 페이지)
+ * - 최초 진입 시 서버에서 목록을 가져와 상태에 저장
+ * - 새 항목 추가(TodoForm) / 완료 토글(TodoList -> TodoItem) 처리
+ * - 네트워크 지연에 대비한 로딩/에러 처리
+ * - 토글은 '낙관적 업데이트'로 즉시 반응 → 실패 시 롤백
+ */
 export default function Page() {
+  // 화면에 렌더링할 전체 할 일 목록
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [text, setText] = useState("");
+  // 초기 로딩 상태
+  const [loading, setLoading] = useState(true);
+  // 에러 메시지(있으면 표시)
+  const [err, setErr] = useState<string | null>(null);
 
-  // ✅ 페이지 접속 시 한 번 목록 가져와서 상태에 저장 + 콘솔 출력
+  /** 서버에서 목록을 불러오는 공용 함수 */
+  const load = async () => {
+    setLoading(true);
+    setErr(null);
+    try {
+      const list = await getTodos(); // 서버 목록
+      setTodos(list);                // 상태 반영
+    } catch (e: any) {
+      setErr(e?.message ?? String(e));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /** 최초 진입 시 한 번만 목록 로딩 */
   useEffect(() => {
-    (async () => {
-      try {
-        const list = await getTodos();
-        console.log("[TEST] getTodos result:", list); // 네트워크 응답 확인
-        setTodos(list);
-      } catch (e: any) {
-        console.error("[TEST] getTodos error:", e?.message ?? e);
-        alert("목록 불러오기 실패: " + (e?.message ?? e));
-      }
-    })();
+    load();
   }, []);
 
-  // ✅ 새 항목 추가 테스트
-  const onCreate = async () => {
-    const v = text.trim();
-    if (!v) return alert("텍스트를 입력하세요");
+  /** 새 항목 추가 핸들러 (TodoForm → 여기) */
+  const onCreate = async (name: string) => {
     try {
-      const created = await createTodo(v);
-      console.log("[TEST] createTodo result:", created);
-      // 새 항목을 맨 위에 붙여서 화면에서도 바로 보이게
-      setTodos(prev => [created, ...prev]);
-      setText("");
+      const created = await createTodo(name); // 서버에 생성
+      setTodos(prev => [created, ...prev]);   // 성공 시 목록 맨 앞에 추가
     } catch (e: any) {
-      console.error("[TEST] createTodo error:", e?.message ?? e);
-      alert("추가 실패: " + (e?.message ?? e));
+      alert('추가 실패: ' + (e?.message ?? e));
     }
   };
 
-  // ✅ 토글 테스트(첫 번째 항목을 토글해보기)
-  const onToggleFirst = async () => {
-    if (todos.length === 0) return alert("토글할 항목이 없습니다");
-    const t = todos[0];
+  /** 완료 토글 핸들러 (TodoItem → TodoList → 여기)
+   * - 즉시 화면에 반영(낙관적 업데이트)
+   * - 서버 실패 시 이전 상태로 롤백
+   */
+  const onToggle = async (t: Todo) => {
+    const snapshot = todos; // 롤백용 스냅샷
+    // 1) 먼저 화면에 반영
+    setTodos(prev => prev.map(x => (x.id === t.id ? { ...x, done: !x.done } : x)));
     try {
+      // 2) 서버에 실제 반영
       const updated = await toggleTodo(t.id, !t.done);
-      console.log("[TEST] toggleTodo result:", updated);
-      setTodos(prev => prev.map(x => (x.id === t.id ? updated : x)));
+      // 3) 서버가 돌려준 최종 객체로 동기화(혹시 서버 계산 필드가 있을 수 있음)
+      setTodos(cur => cur.map(x => (x.id === t.id ? updated : x)));
     } catch (e: any) {
-      console.error("[TEST] toggleTodo error:", e?.message ?? e);
-      alert("토글 실패: " + (e?.message ?? e));
+      // 4) 실패 시 롤백
+      setTodos(snapshot);
+      alert('토글 실패: ' + (e?.message ?? e));
     }
   };
 
-  // ✅ 삭제 테스트(첫 번째 항목 삭제)
-  const onDeleteFirst = async () => {
-    if (todos.length === 0) return alert("삭제할 항목이 없습니다");
-    const t = todos[0];
-    try {
-      await deleteTodo(t.id);
-      console.log("[TEST] deleteTodo result: success");
-      setTodos(prev => prev.filter(x => x.id !== t.id));
-    } catch (e: any) {
-      console.error("[TEST] deleteTodo error:", e?.message ?? e);
-      alert("삭제 실패: " + (e?.message ?? e));
-    }
-  };
+  /** 로딩/에러 상태 UI */
+  if (loading) {
+    return <main style={{ padding: 16 }}>Loading…</main>;
+  }
+  if (err) {
+    return (
+      <main style={{ padding: 16 }}>
+        <p style={{ color: 'tomato' }}>에러: {err}</p>
+        <button onClick={load} style={{ marginTop: 8 }}>다시 시도</button>
+      </main>
+    );
+  }
 
+  /** 정상 렌더 */
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 16 }}>
-      <h1>API 통신 테스트 (임시)</h1>
+    <main style={{ maxWidth: 960, margin: '0 auto', padding: 16 }}>
+      <h1 style={{ margin: '16px 0' }}>할 일 목록</h1>
 
-      {/* 입력 + 생성 버튼 */}
-      <div style={{ display: "flex", gap: 8 }}>
-        <input
-          value={text}
-          onChange={e => setText(e.target.value)}
-          placeholder="새 할 일 입력"
-          onKeyDown={e => { if (e.key === "Enter") onCreate(); }}
-          aria-label="할 일 입력"
-          style={{ flex: 1, padding: 8 }}
-        />
-        <button onClick={onCreate}>추가 테스트</button>
-      </div>
+      {/* 입력 & 추가 */}
+      <TodoForm onCreate={onCreate} />
 
-      {/* 토글/삭제 테스트: 첫 번째 항목만 대상으로 간단히 */}
-      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-        <button onClick={onToggleFirst}>첫 항목 토글</button>
-        <button onClick={onDeleteFirst}>첫 항목 삭제</button>
-      </div>
+      <div style={{ height: 12 }} />
 
-      {/* 화면에서도 목록 확인 */}
-      <section style={{ marginTop: 16 }}>
-        <h2>목록 미리보기</h2>
-        <ul>
-          {todos.map(t => (
-            <li key={t.id}>
-              <input
-                type="checkbox"
-                checked={t.done}
-                readOnly
-                style={{ marginRight: 6 }}
-              />
-              {t.name}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <p style={{ marginTop: 12, color: "#666" }}>
-        개발자도구(브라우저 콘솔)를 열고 [TEST] 로그를 확인하세요.
-      </p>
+      {/* 진행/완료 분리 리스트 */}
+      <TodoList todos={todos} onToggle={onToggle} />
     </main>
   );
 }
