@@ -2,7 +2,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getTodo, updateTodo, deleteTodo } from '@/lib/todos';
 import type { Todo } from '@/types/todo';
-import { isValidFilename, isUnder5MB, fileToDataURL } from '@/lib/validators';
+import { ensureImageFile } from '@/lib/validators';
+import { uploadImage } from "@/lib/images";
 
 /* 상세 페이지 전용 상태 + 액션 */
 export function useTodoDetail(id: string | undefined) {
@@ -31,11 +32,21 @@ export function useTodoDetail(id: string | undefined) {
   }, [id]);
 
   //파일 선택 -> 검증 -> detaUrl로 변환 -> 상태 반영
-  const pickImage = async (f: File) => {
-    if (!isValidFilename(f.name)) throw new Error('영문/숫자/._- 만 허용');
-    if (!isUnder5MB(f.size)) throw new Error('5MB 이하만 허용');
-    const dataUrl = await fileToDataURL(f);
-    setImageUrl(dataUrl);
+  const pickImage = async (file: File) => {
+    ensureImageFile(file);      // ❗ 사전 검증
+    setBusy(true);
+    try {
+      const url = await uploadImage(file);        // 1) 업로드
+      setImageUrl(url);                           // 2) 화면 즉시 반영
+      const updated = await updateTodo(id, { imageUrl: url }); // 3) 서버 동기화
+      // 4) 서버 계산필드 동기화
+      setName(updated.name);
+      setDone(updated.done);
+      setMemo(updated.memo ?? "");
+      setImageUrl(updated.imageUrl ?? url);
+    } finally {
+      setBusy(false);
+    }
   };
 
   // 저장(PATCH)

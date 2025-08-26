@@ -29,10 +29,15 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* 나눔스퀘어 적용 */}
+        <link
+          href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css"
+          rel="stylesheet"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* 공용 헤더 */}
         <Header />
-        {/* 공용 컨테이너 */}
         <div className="container">{children}</div>
       </body>
     </html>
