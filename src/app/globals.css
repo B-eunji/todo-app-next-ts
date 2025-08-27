@@ -8,7 +8,7 @@
   --slate-400: #94A3B8;
   --slate-300: #CBD5E1;
   --slate-200: #E2E8F0;
-  --slate-100: #F1F5F9;
+  --slate-100: #FFFFFF;
 
   /* Violet */
   --violet-600: #7C3AED;
@@ -25,17 +25,19 @@
 
   /* 프로젝트 공용 매핑 */
   --background: var(--slate-100); /* 전체 배경 */
-  --panel: var(--slate-900); /* 카드/패널 배경 */
-  --text: var(--slate-100); /* 기본 텍스트 */
-  --muted: var(--slate-400); /* 보조 텍스트 */
-  --primary: var(--violet-600); /*주요 버튼/링크 */
-  --danger: var(--rose-500); /* 에러, 경고 */
-  --success: var(--lime-300); /* 성공 메세지 */
-  --border: var(--slate-300); /* 테두리 */
+  --panel: var(--slate-100); /* 패널 배경 */
+  --text: var(--slate-900); /* 기본 텍스트 */
+  --muted: var(--slate-500); /* 입력 보조 텍스트 */
+  --muted2: var(--slate-400); /* 입력 보조 텍스트 with 이미지 */
+  --primary: var(--violet-600); /*포인트 버튼 */
+  --delete: var(--rose-500); /* 삭제 버튼 */
+  --complete: var(--lime-300); /* 수정 완료 버튼 */
+  --border: var(--slate-900); /* 메인 페이지 테두리 */
+  --image_border: var(--slate-300); /* 이미지 카드 테두리 */
 
   /* ---------- Font Sizes ---------- */
-  --font-size-xl: 20px;   /* 큰 제목 */
-  --font-size-lg: 18px;   /* 중간 제목 */
+  --font-size-xl: 20px;   /* 상세페이지-TODO */
+  --font-size-lg: 18px;   /* TODO/DONE */
   --font-size-md: 16px;   /* 본문/기본 */
 
   /* ---------- Font Weights ---------- */
@@ -43,77 +45,49 @@
   --font-weight-bold: 700;      /* Bold */
   --font-weight-regular: 400;   /* Regular */
 
-  /* ---------- Typography Mapping (shorthand: font) ---------- */
-  /* font: <weight> <size> <family> */
-  --heading-xl: var(--font-weight-bold) var(--font-size-xl) 'NanumSquare', sans-serif;       /* 20px / 700 */
-  --heading-lg: var(--font-weight-bold) var(--font-size-lg) 'NanumSquare', sans-serif;       /* 18px / 700 */
-  --title-md:   var(--font-weight-extrabold) var(--font-size-md) 'NanumSquare', sans-serif;  /* 16px / 800 */
-  --subtitle-md:var(--font-weight-bold) var(--font-size-md) 'NanumSquare', sans-serif;       /* 16px / 700 */
-  --body-md:    var(--font-weight-regular) var(--font-size-md) 'NanumSquare', sans-serif;    /* 16px / 400 */
+   /* Buttons (text buttons) */
+  --btn-height-sm: 32px;
+  --btn-height-md: 56px;
+  --btn-radius: 9999px;    /* pill */
+  --btn-gap: 4px;          /* 아이콘-텍스트 간격 */
+  --btn-px: 42.96px;       /* 좌우 패딩(Figma값) */
 
-  /* ---------- Btn Sizes ---------- */
-  /* Size */
-  --btn-height-sm: 40px;
-  --btn-height-md: 48px;
-  --btn-height-lg: 56px;
-  --btn-radius: 9999px;         /* pill */
-  --btn-gap: 8px;               /* 아이콘-텍스트 간격 */
-  --btn-px: 16px;               /* 좌우 패딩 */
-
-  /* Border & Shadow (피그마 느낌) */
-  --btn-border-color: #0b1324;
+  --btn-border-color: var(--border);
   --btn-border: 2px solid var(--btn-border-color);
-  --btn-shadow: 0 4px 0 var(--btn-border-color);
-  --btn-shadow-active: 0 3px 0 var(--btn-border-color);
 
-  /* Typography */
   --btn-font: var(--font-weight-bold) var(--font-size-md) 'NanumSquare', sans-serif;
 
-  /* Colors (기본 팔레트에서 매핑) */
-  --btn-bg-default: var(--slate-200);
-  --btn-fg-default: var(--slate-900);
+  /* Button tone mapping */
+  --btn-bg-default:  var(--slate-200);
+  --btn-fg-default:  var(--slate-900);
 
-  --btn-bg-primary: var(--primary);
-  --btn-fg-primary: #0b1410;
+  --btn-bg-primary:  var(--primary);
+  --btn-fg-primary:  #FFFFFF;
 
-  --btn-bg-success: var(--success);
-  --btn-fg-success: #0b1410;
+  --btn-bg-complete: var(--complete);
+  --btn-fg-complete: var(--slate-900);
 
-  --btn-bg-danger: var(--danger);
-  --btn-fg-danger: #0b1410;
+  --btn-bg-delete:   var(--delete);
+  --btn-fg-delete:   var(--slate-900);
 }
 
-/* 박스 사이징 초기화 */
+/* ============ Resets ============ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* 기본 배경/텍스트 색상 적용 */
-html, body {
-  height: 100%;
-  background: var(--background);
-  color: var(--text);
-}
-
-/* 링크는 색상 상속 + 밑줄 제거 */
+html, body { height: 100%; background: var(--background); color: var(--text); }
 a { color: inherit; text-decoration: none; }
+button { cursor: pointer; }
 
-/* 버튼은 커서 포인터
-button { cursor: pointer; } */
+/* layout helper */
+.container { max-width: 960px; margin: 0 auto; padding: 16px; }
+@media (min-width: 768px){ .container { padding: 24px; } }
 
-/* 공용 컨테이너: 중앙 정렬 + 반응형 패딩 */
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-@media (min-width: 768px) {
-  .container { padding: 24px; }
-}
-
-/* Btn-Base */
+/* ============ Button Base ============ */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: var(--btn-gap);
+
   height: var(--btn-height-md);
   padding: 0 var(--btn-px);
 
@@ -124,33 +98,63 @@ button { cursor: pointer; } */
 
   font: var(--btn-font);
   text-decoration: none;
-  cursor: pointer;
-
-  box-shadow: var(--btn-shadow);
-  transition: transform .05s ease, box-shadow .05s ease, opacity .15s ease;
+  transition: transform .05s ease, opacity .15s ease;
 }
 
-.btn:hover   { opacity: .95; }
-.btn:active  { transform: translateY(1px); box-shadow: var(--btn-shadow-active); }
-.btn:disabled,
-.btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+.btn:hover { opacity: .95; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
 
-/* Variants */
-.btn--primary { background: var(--btn-bg-primary); color: var(--btn-fg-primary); }
-.btn--success { background: var(--btn-bg-success); color: var(--btn-fg-success); }
-.btn--danger  { background: var(--btn-bg-danger);  color: var(--btn-fg-danger); }
-.btn--secondary { background: var(--btn-bg-default); color: var(--btn-fg-default); }
+/* icon + text 간단 정렬 */
+.btn-icon-left { display:inline-flex; margin-right: var(--btn-gap); }
+.btn-label { display:inline-block; }
 
-/* Sizes */
-.btn--sm { height: var(--btn-height-sm); padding: 0 12px; font-size: 14px; box-shadow: 0 3px 0 var(--btn-border-color); }
-.btn--lg { height: var(--btn-height-lg); padding: 0 18px; }
+/* ============ Tones (text buttons) ============ */
+.btn--primary  { background: var(--btn-bg-primary);  color: var(--btn-fg-primary); }
+.btn--complete { background: var(--btn-bg-complete); color: var(--btn-fg-complete); }
+.btn--delete   { background: var(--btn-bg-delete);   color: var(--btn-fg-delete); }
+.btn--secondary{ background: var(--btn-bg-default);  color: var(--btn-fg-default); }
 
-/* Icon-only (동그란 버튼) */
+/* Figma 스타일의 ‘아래로 4px 그림자’ (선택 사항) */
+.btn--primary,
+.btn--complete,
+.btn--delete,
+.btn--secondary { position: relative; }
+
+.btn--primary::before,
+.btn--complete::before,
+.btn--delete::before,
+.btn--secondary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateY(4px);
+  background: var(--slate-900);
+  border: var(--btn-border);
+  border-radius: var(--btn-radius);
+  z-index: -1;
+}
+.btn--primary:active::before,
+.btn--complete:active::before,
+.btn--delete:active::before,
+.btn--secondary:active::before {
+  transform: translateY(3px);
+}
+
+/* ============ Icon-only Buttons ============ */
+/* 아이콘 전용은 이미지 자체가 둥근 버튼을 표현하므로 배경/테두리 제거 */
 .btn--icon {
-  width: 40px; height: 40px; padding: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
   border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
 }
 
-/* 아이콘 크기/색 제어 → currentColor 권장 */
-.btn svg, .btn img { width: 16px; height: 16px; display: block; }
+/* 크기 매핑: sm=32, md=56, lg=64 */
+.btn--icon-sm { width:32px; height:32px; }
+.btn--icon-md { width:56px; height:56px; }
+.btn--icon-lg { width:64px; height:64px; }
+
+/* 아이콘 크기 */
+.btn svg, .btn img { width: 16px; height: 16px; display:block; }

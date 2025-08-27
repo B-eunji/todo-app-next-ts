@@ -1,63 +1,55 @@
-// src/components/common/Buttons.tsx
 'use client';
 
-import * as React from 'react';
 import Image from 'next/image';
 import Button from './Button';
-import  ICON  from '@/design/icons';
+import ICON from '@/design/icons';
 
-/**
- * 최종 버튼 제공 
- */
-
-/** 내부에서 반복 사용하는 아이콘 컴포넌트 */
-function IconImg({
-  src,
-  alt,
-  size = 16, // 아이콘 기본 16px 
-}: {
-  src: string;
-  alt: string;
-  size?: number;
-}) {
+/** 반복 아이콘 컴포넌트 (width/height 지정) */
+function IconImg({ src, alt, size = 16 }: { src: string; alt: string; size?: number }) {
   return <Image src={src} alt={alt} width={size} height={size} />;
 }
 
-
-/**
- * + 추가하기 버튼
- * - 입력값이 비었는지 여부(active)에 따라 아이콘 색상 변경
- */
-export const AddButton = ({
+/** 1) + 추가하기 (입력값에 따라 아이콘 색 전환) */
+export function AddButton({
   active = false,
   ...props
 }: {
-  active?: boolean;
-} & Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>) => (
-  <Button
-    variant="add"
-    iconLeft={
-      <Image
-        src={active ? ICON['plus-black'] : ICON['plus']}
-        alt="추가"
-        width={16}
-        height={16}
-      />
-    }
-    {...props}
-  >
-    추가하기
-  </Button>
-);
+  active?: boolean; // true면 plus-black, false면 plus-white
+} & Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>) {
+  return (
+    <Button
+      variant="add"
+      iconLeft={<IconImg src={active ? ICON['plus-black'] : ICON['plus']} alt="추가" />}
+      {...props}
+    >
+      추가하기
+    </Button>
+  );
+}
 
-/* ------------------------------------------------------------------ */
-/* 2) × 삭제하기                                                       */
-/* ------------------------------------------------------------------ */
+/** 2) ✓ 수정 완료 (라임 톤 + 그림자) */
+export function CompleteButton({
+  hasImage = false,
+  ...props
+}: {
+  hasImage?: boolean; // true → 연회색, false → 라임색
+} & Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>) {
+  const variant = hasImage ? 'complete': 'secondary';
+
+  return (
+    <Button
+      variant={variant}
+      iconLeft={<IconImg src={ICON['check']} alt="수정 완료" />}
+      {...props}
+    >
+      수정 완료
+    </Button>
+  );
+}
+
+/** 3) × 삭제하기 (로즈 톤 + 그림자) */
 export function DeleteButton(
-  props: Omit<
-    React.ComponentProps<typeof Button>,
-    'variant' | 'iconLeft' | 'children'
-  >
+  props: Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>
 ) {
   return (
     <Button
@@ -70,38 +62,19 @@ export function DeleteButton(
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 3) ✓ 수정 완료                                                      */
-/* ------------------------------------------------------------------ */
-export function CompleteButton(
-  props: Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>
-) {
-  return (
-    <Button
-      variant="complete"
-      iconLeft={<IconImg src={ICON['check']} alt="수정 완료" />}
-      {...props}
-    >
-      수정 완료
-    </Button>
-  );
-} 
-
-/* ------------------------------------------------------------------ */
-/* 4) 체크(완료/해제 토글)                                             */
-/* ------------------------------------------------------------------ */
+/** 4) 완료 토글 (아이콘만 바뀜) */
 export function ToggleDoneButton(
-  props: Omit<
-    React.ComponentProps<typeof Button>,
-    'variant' | 'iconLeft'
-  > & { done: boolean; label?: string }
+  props: Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'> & {
+    done: boolean;
+    label?: string;
+  }
 ) {
   const { done, label = done ? '완료됨' : '진행 중', ...rest } = props;
-  const src = done ? ICON['check-box-done'] : ICON['check-box'];
+  const icon = done ? ICON['check-box-done'] : ICON['check-box'];
   return (
     <Button
       variant="toggle_done"
-      iconLeft={<IconImg src={src} alt={label} />}
+      iconLeft={<IconImg src={icon} alt={label} />}
       {...rest}
     >
       {label}
@@ -109,42 +82,34 @@ export function ToggleDoneButton(
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 5) 이미지 추가                                                       */
-/* ------------------------------------------------------------------ */
+/** 5) 이미지 추가 (아이콘 전용, 64px) */
 export function ImageAddButton(
   props: Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft' | 'children'>
 ) {
   return (
     <Button
       variant="image_add"
+      iconOnly
+      size="lg"                            // 64px
       aria-label={props['aria-label'] ?? '이미지 추가'}
-      iconLeft={<IconImg 
-                  src={ICON['circle-button']} 
-                  alt="이미지 추가"
-                  size={64}
-                  />}
+      iconLeft={<IconImg src={ICON['circle-button']} alt="이미지 추가" />}
       {...props}
-    >
-    </Button>
+    />
   );
 }
 
-
-
-/* ------------------------------------------------------------------ */
-/* 6) 이미지 변경(편집)                                                */
-/* ------------------------------------------------------------------ */
+/** 6) 이미지 변경 (아이콘 전용, 56px) */
 export function ImageEditButton(
   props: Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft' | 'children'>
 ) {
   return (
     <Button
       variant="image_edit"
+      iconOnly
+      size="md"                               // 56px
       aria-label={props['aria-label'] ?? '이미지 변경'}
-      iconLeft={<IconImg src={ICON['edit-circle-button']} alt="이미지 변경" size={64}/>}
+      iconLeft={<IconImg src={ICON['edit-circle-button']} alt="이미지 변경"/>}
       {...props}
-    >
-    </Button>
+    />
   );
 }
