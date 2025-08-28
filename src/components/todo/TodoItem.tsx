@@ -1,61 +1,52 @@
 'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import styles from './TodoItem.module.css';
 import type { Todo } from '@/types/todo';
+import ICON from '@/design/icons';
 
 /**
- * TodoItem
- * - '할 일 1개'를 표시하는 최소 단위 컴포넌트
- * - 완료 토글(체크박스) + 제목(레이블) + 상세 페이지 링크 제공
- * - 삭제는 과제 요구상 상세 페이지에서 처리하므로 여기서는 제외
- *
- * Props
- * - todo: 렌더링할 할 일 한 개
- * - onToggle(t): 체크박스 변경 시 상위로 이벤트를 올림 (실제 상태/서버 업데이트는 상위가 담당)
+ * 단일 아이템
+ * - 좌측 체크 아이콘(진행/완료)
+ * - 텍스트
+ * - 전체 캡슐 클릭 시 상세 페이지 이동
  */
 
 export default function TodoItem({
-    todo,
-    onToggle,
+  todo,
+  onToggle,
 }: {
-    todo: Todo;
-    onToggle: (t: Todo) => void | Promise<void>;
+  todo: Todo;
+  onToggle: () => void;
 }) {
-    //label과 연결해 텍스트 클릭만으로 토글 가능(히트 영역 확대 및 접근성 향상)
-    const checkboxId = `todo-check-${todo.id}`;
+  const icon = todo.done ? ICON['check-box-done'] : ICON['check-box'];
+  const label = todo.done ? '완료됨' : '진행 중';
 
-    return (
-        <li
-            style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 12px', border: `1px solid var(--border)`,
-                background: 'var(--panel)', borderRadius: 10
-            }}
+  return (
+    <Link
+      href={`/items/${todo.id}`}
+      className={styles.capsule}
+      aria-label={`상세 보기: ${todo.name}`}
+    >
+      <span className={styles.front}>
+        <button
+          type="button"
+          className={styles.iconBtn}
+          onClick={(e) => {
+            e.preventDefault();    // 링크 이동 차단
+            e.stopPropagation();   // 상위로 이벤트 버블링 방지
+            onToggle();            // 완료/해제 토글
+          }}
+          aria-pressed={todo.done}
+          aria-label={`${label}: ${todo.name}`}
         >
-            {/* 네이티브 체크박스: 탭/스페이스 자동 지원 */}
-            <input
-                id = {checkboxId}
-                type   = "checkbox"
-                checked={todo.done}
-                onChange={()=> onToggle(todo)} // 이벤트만 상위로 전달
-                aria-label={`${todo.name} 완료 토글`}
-            /> 
+          <Image src={icon} alt={label} width={32} height={32} />
+        </button>
 
-            {/* Todo 제목 */}
-            <label
-                htmlFor={checkboxId}
-                style={{
-                    textDecoration: todo.done ? 'line-through' : 'none',
-                    color: todo.done ? 'var(--muted)' : 'var(--text)',
-                    cursor: 'pointer'
-                }}
-            >
-                {todo.name}
-            </label>
-
-            {/* 상세 페이지로 이동 */}
-            <Link href={`/items/${todo.id}`} style={{marginLeft: 'auto'}}>
-                상세
-            </Link>
-        </li>
-    );
+        {/* 텍스트 (기존 그대로) */}
+        <span className={styles.text}>{todo.name}</span>
+      </span>
+    </Link>
+  );
 }

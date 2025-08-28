@@ -1,0 +1,175 @@
+/* 상세 페이지 컨테이너
+   - 글로벌 .container 대신 독립 적용 (페이지별 최대폭/가터 조절)
+   - Figma 기준: Desktop 중심, Tablet/Mobile 가터 조정
+*/
+/* 페이지 상단/하단 여백만 담당. 실제 배치는 폼에서 함 */
+.page {
+  padding-block: 24px;
+}
+@media (min-width: 744px) {
+  .page { padding-block: 32px; }
+}
+@media (min-width: 1024px) {
+  .page { padding-block: 40px; }
+}
+
+/* ===== 루트 섹션 ===== */
+.form {
+  display: grid;
+  row-gap: 16px;
+}
+
+/* ===== 제목 캡슐 (64px) ===== */
+.titleCapsule {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 16px 12px;
+  border: 2px solid var(--slate-900);
+  border-radius: 24px;
+  background: #fff;
+  position: relative;
+  /* 입력 캡슐 그림자(메인 입력과 동일) */
+  box-shadow: 2px 4px 0 0 var(--slate-900);
+  gap: 16px;
+}
+
+.status {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+.statusDot {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--slate-900);
+  border-radius: 50%;
+  background: var(--yellow-50, #FEFCE8);
+  display: block;
+}
+
+.titleInput {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--slate-900);
+  font: var(--font-default);
+}
+
+/* ===== 본문 그리드 ===== */
+.bodyGrid {
+  display: grid;
+  gap: 16px;
+}
+
+/* 데스크톱: 이미지/메모 2열 */
+@media (min-width: 1024px) {
+  .bodyGrid {
+    grid-template-columns: 384px 1fr;
+    gap: 24px;
+  }
+}
+
+/* ===== 이미지 카드 ===== */
+.imageCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 384 / 311; /* Figma 비율 근사 */
+  background: #F8FAFC;
+  border: 2px dashed var(--slate-300);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* 비어 있을 때 중앙 안내 */
+.dropHint {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  color: var(--slate-300);
+}
+.dropIcon { font-size: 32px; }
+
+/* 실제 이미지 */
+.image {
+  object-fit: cover;
+}
+
+/* 이미지 플로팅 버튼(편집/추가 공통) */
+.imageAddFab,
+.imageEditFab {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--slate-900);
+  display: grid; place-items: center;
+  background: var(--slate-200);
+  box-shadow: 2px 4px 0 0 var(--slate-900);
+}
+.imageEditFab { background: rgba(15,23,42,.5); color: #fff; }
+.fabInner { font-size: 20px; line-height: 1; }
+
+/* ===== 메모 카드 ===== */
+.memoCard {
+  border-radius: 24px;
+  background: #FEFCE8; /* yellow/50 */
+  padding: 16px;
+  border: 0;
+  position: relative;
+  box-shadow: 2px 4px 0 0 var(--slate-900);
+}
+
+/* 머리글 */
+.memoHead {
+  text-align: center;
+  color: var(--amber-800);
+  font: var(--btn-font);
+  margin-bottom: 8px;
+}
+
+/* 공책 라인 배경 */
+.memoTextarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 2px solid transparent;
+  outline: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0,
+      rgba(0,0,0,0) 22px,
+      rgba(0,0,0,0.06) 22px,
+      rgba(0,0,0,0.06) 24px
+    );
+  padding: 12px;
+  color: var(--slate-800);
+  font: var(--font-default);
+  border-radius: 12px;
+}
+
+/* ===== 액션 버튼 ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* 반응형(태블릿/모바일): 1열 스택 + 버튼 정렬 */
+@media (max-width: 1023px) {
+  .memoTextarea { min-height: 200px; }
+}
+@media (max-width: 743px) {
+  .titleCapsule { height: 56px; padding-block: 12px; }
+  .imageAddFab, .imageEditFab { width: 56px; height: 56px; }
+  .actions { justify-content: space-between; }
+}

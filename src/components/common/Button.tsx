@@ -21,7 +21,7 @@ export type ButtonVariant =
   | 'delete';      // 삭제
 
 /** 아이콘-only 버튼 지름 프리셋 (globals.css에 대응) */
-type IconOnlySize = 'sm' | 'md' | 'lg';
+type IconOnlySize = 'sm' | 'md' | 'lg' | 'xl';
 
 type ButtonBaseProps = {
   /** 버튼 라벨(텍스트). 아이콘-only 버튼이면 생략 가능 */

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Button from './Button';
+import type { ButtonVariant } from './Button';
 import ICON from '@/design/icons';
 
 /** 반복 아이콘 컴포넌트 (width/height 지정) */
@@ -11,18 +12,26 @@ function IconImg({ src, alt, size = 16 }: { src: string; alt: string; size?: num
 
 /** 1) + 추가하기 (입력값에 따라 아이콘 색 전환) */
 export function AddButton({
-  active = false,
+  active = false, // true면 보라(primary), false면 회색(secondary)
+  className,
   ...props
 }: {
-  active?: boolean; // true면 plus-black, false면 plus-white
+  active?: boolean;
 } & Omit<React.ComponentProps<typeof Button>, 'variant' | 'iconLeft'>) {
+  // 역할 이름으로 넘겨야 함. 'primary' 같은 톤 문자열 금지
+  const variant: ButtonVariant = active ? 'add' : 'secondary';
+
+  // 아이콘도 상태에 맞춰 교체
+  const iconSrc = active ? ICON['plus'] : ICON['plus-black'];
+
   return (
     <Button
-      variant="add"
-      iconLeft={<IconImg src={active ? ICON['plus-black'] : ICON['plus']} alt="추가" />}
+      variant={variant}
+      className={['btn--add', className].filter(Boolean).join(' ')}
+      iconLeft={<Image src={iconSrc} alt="추가" width={16} height={16} />}
       {...props}
     >
-      추가하기
+       <span className="btn-label">추가하기</span>
     </Button>
   );
 }
@@ -45,6 +54,7 @@ export function CompleteButton({
       수정 완료
     </Button>
   );
+  
 }
 
 /** 3) × 삭제하기 (로즈 톤 + 그림자) */
@@ -90,7 +100,7 @@ export function ImageAddButton(
     <Button
       variant="image_add"
       iconOnly
-      size="lg"                            // 64px
+      size="xl"                            // 64px
       aria-label={props['aria-label'] ?? '이미지 추가'}
       iconLeft={<IconImg src={ICON['circle-button']} alt="이미지 추가" />}
       {...props}
@@ -106,7 +116,7 @@ export function ImageEditButton(
     <Button
       variant="image_edit"
       iconOnly
-      size="md"                               // 56px
+      size="xl" 
       aria-label={props['aria-label'] ?? '이미지 변경'}
       iconLeft={<IconImg src={ICON['edit-circle-button']} alt="이미지 변경"/>}
       {...props}

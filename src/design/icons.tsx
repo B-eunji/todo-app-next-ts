@@ -8,6 +8,7 @@ const ICON = {
     
     'check': '/icons/check.svg',// 검정색 체크 
     'x': '/icons/X.svg', //흰색 X
+    'image-empty': 'icons/img.svg', // 이미지 아이콘
     'circle-button': '/icons/button/circle-button.svg', // 이미지 추가 버튼
     'edit-circle-button': '/icons/button/circle-button2.svg', //이미지 변경 버튼
 } as const;

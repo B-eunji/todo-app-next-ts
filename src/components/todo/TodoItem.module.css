@@ -1,0 +1,92 @@
+/* 캡슐 하나로 통합 (앞판/뒤판 분리 제거) */
+.capsule {
+  /* 레이아웃 */
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  /* 사이즈 */
+  height: 50px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+
+  /* 스타일 */
+  background: #FFFFFF;
+  border: 2px solid var(--slate-900); /* 진한 테두리 */
+  border-radius: 27px;
+
+  /* 링크/버튼 공통 */
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 아이콘+텍스트 */
+.front {
+  display: flex;
+  align-items: center;
+  gap: 16px;   
+  width: 100%;
+  height: 100%;
+}
+
+/* 좌측 체크 아이콘 래퍼 (크기 고정) */
+.icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon img,
+.icon svg {
+  display: block;   
+  width: 100%;
+  height: 100%;
+}
+
+/* 텍스트: 한 줄 */
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  line-height: 1.2;
+  align-items: center;  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+  font: var(--font-default);
+}
+
+/* 좌측 토글 전용 버튼 스타일 */
+.iconBtn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px; 
+  cursor: pointer;
+}
+.iconBtn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 리스트 폭 고정 */
+.items {
+  width: 100%;           /* 데스크톱 기준 */
+}
+
+.items > li {
+  width: 100%;            /* li는 UL 폭 채움 */
+}
+
+@media (max-width: 768px) {
+  .items {
+    width: 100%;         /* 모바일 기준 */
+  }
+}
+

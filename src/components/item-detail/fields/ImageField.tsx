@@ -1,5 +1,7 @@
 'use client';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useId } from 'react';
+import styles from './ImageField.module.css';
+import ICON from '@/design/icons';
 
 export default function ImageField({
   imageUrl,
@@ -11,6 +13,7 @@ export default function ImageField({
   disabled?: boolean;
 }) {
   const [fileName, setFileName] = useState(''); // 직접 표시할 파일명
+  const inputId = useId();
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(async (e) => {
     const input = e.currentTarget;             // 비동기 전에 참조 저장
@@ -43,27 +46,38 @@ export default function ImageField({
   }, [onPick]);
 
   return (
-    <div style={{ display: 'grid', gap: 6 }}>
-      <label htmlFor="image-input">이미지 (영문 파일명, 5MB 이하)</label>
+    <div className={styles.wrap}>
+      {/* 실제 파일 입력은 숨김 */}
       <input
-        id="image-input"
+        id={inputId}
         type="file"
         accept="image/*"
         onChange={onChange}
         disabled={disabled}
+        className={styles.inputFile}
       />
-      {/* 기본 input 라벨 대신 파일명을 직접 보여줌 */}
-      <small style={{ color: 'var(--muted)' }}>
-        {fileName ? `선택됨: ${fileName}` : '선택된 파일 없음'}
-      </small>
 
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="미리보기"
-          style={{ maxWidth: '100%', borderRadius: 8 }}
-        />
+      {/* 콘텐츠 슬롯: 이미지 있으면 채우기, 없으면 플레이스홀더 */}
+      {!imageUrl ? (
+        <label htmlFor={inputId} className={`${styles.box} ${styles.emptyBox}`} aria-label="이미지 추가">
+          <img src={ICON['image-empty']} alt="이미지 없음" width={64} height={64} />
+          <span className={styles.help}>이미지를 추가하세요 (영문 파일명, 5MB 이하)</span>
+        </label>
+      ) : (
+        <div className={`${styles.box} ${styles.imageBox}`}>
+          {/* 원격 도메인 이슈 회피를 위해 <img> 사용 */}
+          <img src={imageUrl} alt="미리보기" className={styles.fillImg} />
+          {/* 우하단 편집버튼: 라벨로 파일선택 트리거 */}
+          <label htmlFor={inputId} className={styles.fab} aria-label="이미지 변경">
+            <img src={ICON['edit-circle-button']} alt="" width={64} height={64} />
+          </label>
+        </div>
       )}
+
+      {/* 파일명 안내(선택 시만 노출) */}
+      <small className={styles.caption}>
+        {fileName ? `선택됨: ${fileName}` : '\u00A0'}
+      </small>
     </div>
   );
 }

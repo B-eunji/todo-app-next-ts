@@ -1,0 +1,88 @@
+/* 리스트 전체: 반응형 1~2열 그리드 */
+.list {
+  display: grid;
+  row-gap: 24px;               /* 모바일/태블릿 기본 간격 */
+}
+
+/* ≥1024px 에서 2열 */
+@media (min-width: 1024px) {
+  .list {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 0;
+  }
+}
+
+/* 그룹 카드 */
+.group {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+}
+
+/* 그룹 헤더(칩 + 카운트) */
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 칩(TO DO / DONE) */
+.chip {
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 폰트: 버튼과 동일한 볼드 16px */
+  font: var(--btn-font);
+}
+
+/* Figma 색상에 맞춰 토큰 사용 */
+.chip--todo { background: var(--lime-300);  color: var(--slate-900); }
+.chip--done { background: var(--slate-300); color: var(--slate-900); }
+
+.count {
+  font: var(--font-default);
+  color: var(--color-muted);
+}
+
+/* 아이템 스택 */
+.items {
+  display: grid;
+  gap: 12px; /* 아이템 간격 */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 비었을 때 컨테이너 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 12px;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-muted2);
+  font: var(--font-default);
+}
+
+/* 이미지 크기 제어(원본 비율 유지) */
+.emptyImg {
+  width: 240px;
+  height: auto;
+}
+
+/* 안내 텍스트 */
+.emptyText {
+  line-height: 1.4;
+}
+
+/* 반응형: 모바일에서 이미지 살짝 축소 */
+@media (max-width: 768px) {
+  .emptyImg { width: 120px; }
+}
