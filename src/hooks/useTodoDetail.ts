@@ -11,7 +11,7 @@ export function useTodoDetail(id: string | undefined) {
   const [name, setName] = useState('');
   const [done, setDone] = useState(false);
   const [memo, setMemo] = useState('');
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -24,8 +24,10 @@ export function useTodoDetail(id: string | undefined) {
       setLoading(true); setErr(null);
       try {
         const data = await getTodo(id);
-        setItem(data); setName(data.name ?? ''); setDone(!!data.done);
-        setMemo(data.memo ?? ''); setImageUrl(data.imageUrl ?? '');
+        setItem(data); setName(data.name ?? ''); 
+        setDone(!!data.done);
+        setMemo(data.memo ?? ''); 
+        setImageUrl(data.imageUrl ?? undefined);
       } catch (e: any) { setErr(e?.message ?? String(e)); }
       finally { setLoading(false); }
     })();
@@ -37,13 +39,13 @@ export function useTodoDetail(id: string | undefined) {
     setBusy(true);
     try {
       const url = await uploadImage(file);        // 1) 업로드
-      setImageUrl(url);                           // 2) 화면 즉시 반영
-      const updated = await updateTodo(id, { imageUrl: url }); // 3) 서버 동기화
+      if (url) setImageUrl(url);                           // 2) 화면 즉시 반영
+      const updated = await updateTodo(id, { imageUrl: url ?? undefined }); // 3) 서버 동기화
       // 4) 서버 계산필드 동기화
       setName(updated.name);
       setDone(updated.done);
       setMemo(updated.memo ?? "");
-      setImageUrl(updated.imageUrl ?? url);
+      setImageUrl(updated.imageUrl ?? url ?? undefined);
     } finally {
       setBusy(false);
     }
@@ -55,7 +57,7 @@ export function useTodoDetail(id: string | undefined) {
     const v = name.trim(); if (!v) throw new Error('이름을 입력하세요.');
     setBusy(true);
     try {
-      await updateTodo(item.id, { name: v, done, memo, imageUrl: imageUrl || undefined });
+      await updateTodo(item.id, { name: v, done, memo, imageUrl });
     } finally { setBusy(false); }
   };
 
