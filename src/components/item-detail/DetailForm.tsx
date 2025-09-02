@@ -13,7 +13,7 @@ export default function DetailForm(props: {
   name: string; setName: (v: string) => void;
   done: boolean; setDone: (v: boolean) => void;
   memo: string; setMemo: (v: string) => void;
-  imageUrl: string; onPickImage: (f: File) => void;
+  imageUrl?: string; onPickImage: (f: File) => void;
   busy?: boolean; onSave: () => void; onDelete: () => void;
 }) {
   const {
