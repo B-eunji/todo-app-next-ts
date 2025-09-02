@@ -37,6 +37,10 @@ export function useTodoDetail(id: string | undefined) {
   const pickImage = async (file: File) => {
     ensureImageFile(file);      // ❗ 사전 검증
     setBusy(true);
+    if (!id) {
+    throw new Error('상세 정보를 불러오지 못했습니다. (id 없음)');
+  }
+    
     try {
       const url = await uploadImage(file);        // 1) 업로드
       if (url) setImageUrl(url);                           // 2) 화면 즉시 반영
